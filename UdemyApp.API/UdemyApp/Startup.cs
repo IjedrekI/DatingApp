@@ -31,6 +31,7 @@ namespace UdemyApp
             services.AddDbContext<DataContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddCors();
+            services.AddScoped<IAuthRepository, AuthRepository >();
 
         }
 
@@ -50,6 +51,7 @@ namespace UdemyApp
             //app.UseHttpsRedirection();
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseMvc();
+
         }
     }
 }
