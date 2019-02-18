@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,7 +32,12 @@ namespace UdemyApp
             services.AddDbContext<DataContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddCors();
-            services.AddScoped<IAuthRepository, AuthRepository >();
+            //services.AddScoped<IAuthRepository, AuthRepository >();
+            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //    .AddJwtBearer(options =>
+            //    {
+
+            //    })
 
         }
 
