@@ -28,6 +28,7 @@ namespace UdemyApp.Controllers
             this.repository = repository;
             this.config = config;
         }
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto)
         {
