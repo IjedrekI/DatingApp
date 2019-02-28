@@ -49,7 +49,9 @@ namespace UdemyApp.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
         {
-            var userFromRepo = await repository.Login(userForLoginDto.UserName.ToLower(), userForLoginDto.Password);
+            throw new Exception("Handle me!");
+
+           var userFromRepo = await repository.Login(userForLoginDto.UserName.ToLower(), userForLoginDto.Password);
 
             if (userForLoginDto == null)
                 return Unauthorized();
