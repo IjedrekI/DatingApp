@@ -23,9 +23,11 @@
     "@ng-bootstrap/ng-bootstrap": "^4.0.3",
     "alertifyjs": "^1.11.2",
     "bootstrap": "^4.3.1",
+    "bootswatch": "^4.3.1",
     "core-js": "^2.5.4",
     "font-awesome-sass": "^4.7.0",
     "fontawesome": "^5.6.3",
+    "ngx-bootstrap": "^3.2.0",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.26"
