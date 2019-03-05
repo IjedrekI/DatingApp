@@ -15,9 +15,8 @@ using UdemyApp.Models;
 
 namespace UdemyApp.Controllers
 {
-    [Authorize]
-    [Route("api/")]
-    [ApiController]
+    [Route("api/auth/")]
+    //[ApiController]
     public class AuthController : ControllerBase
     {
         private readonly IAuthRepository repository;
@@ -28,58 +27,28 @@ namespace UdemyApp.Controllers
             this.repository = repository;
             this.config = config;
         }
-        [AllowAnonymous]
+
         [HttpPost("register")]
-        public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto)
+        public async Task<IActionResult> Register([FromBody]UserForLoginDto userForLoginDto)
         {
-            userForRegisterDto.UserName = userForRegisterDto.UserName.ToLower();
 
-            if (await repository.UserExist(userForRegisterDto.UserName))
-                return BadRequest("Username already exist");
+            if (ModelState.IsValid)
+             return BadRequest(); 
 
-            var userToCreate = new User()
+            userForLoginDto.UserName = userForLoginDto.UserName.ToLower();
+
+            if (await repository.UserExist(userForLoginDto.UserName))
+                return BadRequest();
+
+            var userForCreation = new User()
             {
-                Name = userForRegisterDto.UserName
+                Name = userForLoginDto.UserName
             };
 
-            var createdUser = await repository.Register(userToCreate, userForRegisterDto.Password);
-
+            var CreatedUser = repository.Register(userForCreation, userForLoginDto.Password);
+           
             return StatusCode(201);
         }
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
-        {
-
-           var userFromRepo = await repository.Login(userForLoginDto.UserName.ToLower(), userForLoginDto.Password);
-
-            if (userForLoginDto == null)
-                return Unauthorized();
-
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
-                new Claim(ClaimTypes.Name, userFromRepo.Name)
-            };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config
-                .GetSection("Appsettings:Token").Value));
-
-            var creds = new SigningCredentials(key, SecurityAlgorithms.Sha512);
-
-            var tokenDescription = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(1),
-                SigningCredentials = creds
-            };
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            var token = tokenHandler.CreateToken(tokenDescription);
-
-            return Ok(new {
-                token = tokenHandler.WriteToken(token)
-            });
-        }
+       
     }
 }

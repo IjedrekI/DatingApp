@@ -48,26 +48,6 @@ namespace UdemyApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("City");
-
-                    b.Property<string>("Country");
-
-                    b.Property<DateTime>("Created");
-
-                    b.Property<DateTime>("DateOfBirth");
-
-                    b.Property<string>("Gender");
-
-                    b.Property<string>("Interests");
-
-                    b.Property<string>("Introduction");
-
-                    b.Property<string>("KnownAs");
-
-                    b.Property<DateTime>("LastActive");
-
-                    b.Property<string>("LookingFor");
-
                     b.Property<string>("Name");
 
                     b.Property<byte[]>("PasswordHash");
@@ -95,7 +75,7 @@ namespace UdemyApp.Migrations
             modelBuilder.Entity("UdemyApp.Models.Photo", b =>
                 {
                     b.HasOne("UdemyApp.Models.User", "User")
-                        .WithMany("MPhotos")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
