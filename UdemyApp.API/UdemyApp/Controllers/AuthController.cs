@@ -15,7 +15,7 @@ using UdemyApp.Models;
 
 namespace UdemyApp.Controllers
 {
-    [Route("api/auth/")]
+    [Route("api/auth")]
     //[ApiController]
     public class AuthController : ControllerBase
     {
@@ -32,7 +32,7 @@ namespace UdemyApp.Controllers
         public async Task<IActionResult> Register([FromBody]UserForLoginDto userForLoginDto)
         {
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
              return BadRequest(); 
 
             userForLoginDto.UserName = userForLoginDto.UserName.ToLower();
@@ -48,6 +48,42 @@ namespace UdemyApp.Controllers
             var CreatedUser = repository.Register(userForCreation, userForLoginDto.Password);
            
             return StatusCode(201);
+        }
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody]UserForLoginDto userForLoginDto)
+        {
+            var userFromRepo = await repository.Login(userForLoginDto.UserName.ToLower(), userForLoginDto.Password);
+
+            if(userFromRepo == null)
+            {
+                return Unauthorized();
+            }
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
+                new Claim(ClaimTypes.Name, userFromRepo.Name),
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("AppSettings:Token").Value));
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha384Signature);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.Now.AddDays(1),
+                SigningCredentials = creds
+            };
+
+            var a = new SecurityTokenDescriptor();
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            var tokenToReturn = tokenHandler.WriteToken(token);
+
+            return Ok(tokenToReturn);
         }
        
     }
